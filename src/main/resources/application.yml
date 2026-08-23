@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5435/user_db}
+    username: ${DB_USERNAME:user_service}
+    password: ${DB_PASSWORD:user_service}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka/}
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+server:
+  port: ${PORT:9093}
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-me-in-prod-min-256-bits-long-please-replace}
+    expiration-ms: ${JWT_EXPIRATION_MS:3600000}
