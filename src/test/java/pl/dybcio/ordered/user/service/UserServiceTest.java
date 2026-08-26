@@ -140,4 +140,45 @@ class UserServiceTest {
 
     assertThatThrownBy(() -> service().getById(1L)).isInstanceOf(IllegalStateException.class);
   }
+
+  @Test
+  void promoteToSeller_addsSellerRole_andReturnsFreshTokenWithItBakedIn() {
+    User user =
+        User.builder()
+            .id(1L)
+            .email("adam@example.com")
+            .roles(new java.util.HashSet<>(Set.of(Role.USER)))
+            .build();
+    when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+    when(jwtService.generateToken(any(UserDetailsImpl.class))).thenReturn("fresh.jwt.with.seller");
+
+    LoginResponse response = service().promoteToSeller(1L);
+
+    assertThat(response.token()).isEqualTo("fresh.jwt.with.seller");
+    assertThat(user.getRoles()).contains(Role.SELLER, Role.USER);
+    verify(userRepository).save(user);
+
+    ArgumentCaptor<UserDetailsImpl> captor = ArgumentCaptor.forClass(UserDetailsImpl.class);
+    verify(jwtService).generateToken(captor.capture());
+    assertThat(captor.getValue().getAuthorities())
+        .extracting(Object::toString)
+        .contains("ROLE_SELLER");
+  }
+
+  @Test
+  void promoteToSeller_throwsAlreadySeller_whenUserAlreadyHasTheRole() {
+    User user =
+        User.builder()
+            .id(1L)
+            .email("adam@example.com")
+            .roles(new java.util.HashSet<>(Set.of(Role.USER, Role.SELLER)))
+            .build();
+    when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+    assertThatThrownBy(() -> service().promoteToSeller(1L))
+        .isInstanceOf(AlreadySellerException.class);
+
+    verify(userRepository, never()).save(any());
+    verifyNoInteractions(jwtService);
+  }
 }

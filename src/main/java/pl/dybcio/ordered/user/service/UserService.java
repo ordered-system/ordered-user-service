@@ -70,4 +70,24 @@ public class UserService {
                 () -> new IllegalStateException("Authenticated user not found: " + userId));
     return new UserResponse(user.getId(), user.getEmail(), user.getFirstName(), user.getLastName());
   }
+
+  @Transactional
+  public LoginResponse promoteToSeller(Long userId) {
+    User user =
+        userRepository
+            .findById(userId)
+            .orElseThrow(
+                () -> new IllegalStateException("Authenticated user not found: " + userId));
+
+    if (user.getRoles().contains(Role.SELLER)) {
+      throw new AlreadySellerException(userId);
+    }
+
+    user.getRoles().add(Role.SELLER);
+    userRepository.save(user);
+
+    UserDetailsImpl userDetails = new UserDetailsImpl(user);
+    String token = jwtService.generateToken(userDetails);
+    return new LoginResponse(token);
+  }
 }
