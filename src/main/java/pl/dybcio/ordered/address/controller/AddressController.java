@@ -19,7 +19,7 @@ import pl.dybcio.ordered.address.dto.AddressRequest;
 import pl.dybcio.ordered.address.dto.AddressResponse;
 import pl.dybcio.ordered.address.entity.Address;
 import pl.dybcio.ordered.address.service.AddressService;
-import pl.dybcio.ordered.security.AuthenticatedUser;
+import pl.dybcio.ordered.commons.security.AuthenticatedUser;
 
 @RestController
 @RequestMapping("/api/v1/addresses")

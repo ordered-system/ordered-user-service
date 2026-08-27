@@ -25,7 +25,8 @@ import pl.dybcio.ordered.address.entity.Address;
 import pl.dybcio.ordered.address.service.AddressNotFoundException;
 import pl.dybcio.ordered.address.service.AddressService;
 import pl.dybcio.ordered.common.exception.GlobalExceptionHandler;
-import pl.dybcio.ordered.security.AuthenticatedUser;
+import pl.dybcio.ordered.commons.exception.CommonExceptionHandler;
+import pl.dybcio.ordered.commons.security.AuthenticatedUser;
 
 @ExtendWith(MockitoExtension.class)
 class AddressControllerTest {
@@ -41,7 +42,7 @@ class AddressControllerTest {
     AddressController controller = new AddressController(addressService);
     mockMvc =
         MockMvcBuilders.standaloneSetup(controller)
-            .setControllerAdvice(new GlobalExceptionHandler())
+            .setControllerAdvice(new GlobalExceptionHandler(), new CommonExceptionHandler())
             .setCustomArgumentResolvers(new AuthenticationPrincipalArgumentResolver())
             .build();
 

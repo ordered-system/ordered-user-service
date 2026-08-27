@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.dybcio.ordered.security.AuthenticatedUser;
+import pl.dybcio.ordered.commons.security.AuthenticatedUser;
 import pl.dybcio.ordered.user.dto.LoginResponse;
 import pl.dybcio.ordered.user.dto.UserResponse;
 import pl.dybcio.ordered.user.service.UserService;
