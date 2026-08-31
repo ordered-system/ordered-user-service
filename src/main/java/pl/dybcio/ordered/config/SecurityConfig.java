@@ -29,7 +29,14 @@ public class SecurityConfig {
   private final UserDetailsService userDetailsService;
 
   private static final String[] PUBLIC_ENDPOINTS = {
-    "/api/v1/auth/**", "/actuator/health", "/actuator/prometheus", "/error"
+    "/api/v1/auth/**",
+    "/actuator/health",
+    "/actuator/prometheus",
+    "/error",
+    "/v3/api-docs",
+    "/v3/api-docs/**",
+    "/swagger-ui/**",
+    "/swagger-ui.html"
   };
 
   @Bean
