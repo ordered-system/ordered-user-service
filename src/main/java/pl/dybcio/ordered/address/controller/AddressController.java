@@ -1,5 +1,7 @@
 package pl.dybcio.ordered.address.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,22 +26,26 @@ import pl.dybcio.ordered.commons.security.AuthenticatedUser;
 @RestController
 @RequestMapping("/api/v1/addresses")
 @RequiredArgsConstructor
+@Tag(name = "Addresses", description = "The authenticated user's own saved delivery addresses")
 public class AddressController {
 
   private final AddressService addressService;
 
   @GetMapping
+  @Operation(summary = "List the authenticated user's saved addresses")
   public List<AddressResponse> list(@AuthenticationPrincipal AuthenticatedUser user) {
     return addressService.listForUser(user.userId()).stream().map(AddressResponse::from).toList();
   }
 
   @GetMapping("/{id}")
+  @Operation(summary = "Get one of the authenticated user's addresses by id")
   public AddressResponse get(
       @PathVariable Long id, @AuthenticationPrincipal AuthenticatedUser user) {
     return AddressResponse.from(addressService.getForUser(id, user.userId()));
   }
 
   @PostMapping
+  @Operation(summary = "Save a new address")
   public ResponseEntity<AddressResponse> create(
       @Valid @RequestBody AddressRequest request, @AuthenticationPrincipal AuthenticatedUser user) {
     Address address = addressService.create(user.userId(), request);
@@ -47,6 +53,7 @@ public class AddressController {
   }
 
   @PutMapping("/{id}")
+  @Operation(summary = "Update a saved address")
   public AddressResponse update(
       @PathVariable Long id,
       @Valid @RequestBody AddressRequest request,
@@ -55,6 +62,7 @@ public class AddressController {
   }
 
   @DeleteMapping("/{id}")
+  @Operation(summary = "Delete a saved address")
   public ResponseEntity<Void> delete(
       @PathVariable Long id, @AuthenticationPrincipal AuthenticatedUser user) {
     addressService.delete(id, user.userId());
@@ -62,6 +70,7 @@ public class AddressController {
   }
 
   @PatchMapping("/{id}/default")
+  @Operation(summary = "Mark an address as the default delivery address")
   public AddressResponse setDefault(
       @PathVariable Long id, @AuthenticationPrincipal AuthenticatedUser user) {
     return AddressResponse.from(addressService.setDefault(id, user.userId()));
